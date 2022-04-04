@@ -1,5 +1,11 @@
 const { Schema, model } = require('mongoose');
 
+var validateEmail = function(email) {
+    var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    return re.test(email)
+};
+
+
 const UserSchema = new Schema(
     {
       username: {
@@ -20,14 +26,9 @@ const UserSchema = new Schema(
       },
       friends: {
       // reference self 'User'
+        type: Schema.Types.ObjectId,
+        ref: 'User'
       },
-      toppings: [],
-      comments: [
-        {
-          type: Schema.Types.ObjectId,
-          ref: 'Comment'
-        }
-      ]
     },
     {
       toJSON: {
@@ -37,13 +38,13 @@ const UserSchema = new Schema(
     }
   );
 
-// create the Pizza model using the UserSchema
+// create the user model using the UserSchema
 const User = model('User', UserSchema);
 
 // get total count of friends on retrieval
-UserSchema.virtual('friendCount').get(function() {
+/*UserSchema.virtual('friendCount').get(function() {
     return this.friends.length;
-  });
+  });*/
 
 // export the User model
 module.exports = User;
